@@ -2,6 +2,7 @@
 
 from os.path import expanduser
 import os
+import sys
 import requests
 import json
 import random
@@ -19,11 +20,20 @@ parser = argparse.ArgumentParser(prog='qotd', description='Show quote of the day
 parser.add_argument('--update', action='store_true', help='update quote file')
 args = parser.parse_args()
 
-def download (f):
+def download (f, exists):
+    if not exists:
+        print('Downloading quotes file...')
+    else:
+        print('Updating quotes file...')
     # Repo with quotes file
     url = 'https://github.com/dwyl/quotes/raw/master/quotes.json'
     r = requests.get(url, allow_redirects=True)
     open(f, 'wb').write(r.content)
+    if not exists:
+        print('{} downloaded.'.format(f))
+    else:
+        print('{} updated.'.format(f))
+    sys.exit(0)
 
 def show_quote (quote, author):
     if italic_support:
@@ -32,26 +42,20 @@ def show_quote (quote, author):
         author = data[i]['author']
     print('"{}" - {}'.format('\n'.join(textwrap.wrap(quote, width_quote)), author))
 
-
 if not os.path.isdir(data_directory):
     os.makedirs(data_directory)
 
-if not os.path.isfile(quotes_file):
-    print('Downloading quotes file...')
-    download(quotes_file)
-    
-if args.update:
-    print('Updating quotes file...')
-    download(quotes_file)
-    print('{} updated.'.format(quotes_file))
-else:
-    with open(quotes_file) as f:
-        try:
-            data = json.load(f)
-        except:
-            print('Error quotes file not found.')
-        else:
-            i = random.randint(0,len(data)-1)
-            q = data[i]['text']
-            a = data[i]['author']
-            show_quote(q,a)
+exists = os.path.isfile(quotes_file)
+if not (exists) or args.update:
+    download(quotes_file, exists)
+
+with open(quotes_file) as f:
+    try:
+        data = json.load(f)
+    except:
+        print('Error quotes file not found.')
+    else:
+        i = random.randint(0,len(data)-1)
+        q = data[i]['text']
+        a = data[i]['author']
+        show_quote(q,a)
