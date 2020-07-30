@@ -17,7 +17,7 @@ italic_support = True
 quotes_file = data_directory + file_name
 
 parser = argparse.ArgumentParser(prog='qotd', description='Show quote of the day.')
-parser.add_argument('--update', action='store_true', help='update quote file')
+parser.add_argument('-u', '--update', action='store_true', help='update quote file')
 args = parser.parse_args()
 
 def download (f, exists):
