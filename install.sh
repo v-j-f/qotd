@@ -1,6 +1,6 @@
 #!/bin/bash
 
-readonly QOTD_DOWNLOAD_URL="https://bitbucket.org/vjavierf/qotd/raw/master/qotd.py"
+readonly QOTD_DOWNLOAD_URL="https://github.com/vjfernan/qotd/raw/master/qotd"
 readonly QOTD_DIRECTORY="/usr/local/bin"
 
 if [ ${EUID} -ne 0 ]; then
@@ -8,7 +8,7 @@ if [ ${EUID} -ne 0 ]; then
     exit 1
 fi
 if ! [[ -t 0 ]]; then
-    echo "This script is interactive, please run: bash -c \"\$(curl https://bitbucket.org/vjavierf/qotd/raw/master/install.sh)\"" >&2
+    echo "This script is interactive, please run: bash -c \"\$(curl -sL https://github.com/vjfernan/qotd/raw/master/install.sh)\"" >&2
     exit 1
 fi
 if ! [[ -f "$QOTD_DIRECTORY/qotd" ]]; then
